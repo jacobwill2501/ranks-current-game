@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: ranks-current-game-server
+    runtime: node
+    buildCommand: npm install
+    startCommand: node server/index.mjs
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: "22"
+      - key: RIOT_API_KEY
+        sync: false

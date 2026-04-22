@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pre-Reset Ranks</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0e17;
+      --surface: #111826;
+      --border: #1e2d45;
+      --text: #c8d6e8;
+      --muted: #5a7090;
+      --blue-team: #1e4a8a;
+      --red-team: #8a1e1e;
+      --blue-team-bg: #0d2040;
+      --red-team-bg: #200d0d;
+      --challenger: #c89b3c;
+      --grandmaster: #6c8ebf;
+      --master: #9b59c5;
+      --not-found: #3a4a5a;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem;
+    }
+
+    h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: #e8d5a0;
+      margin-bottom: 0.3rem;
+    }
+
+    .subtitle {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 1.8rem;
+      text-align: center;
+    }
+
+    form {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      width: 100%;
+      max-width: 420px;
+    }
+
+    input {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 0.95rem;
+      padding: 0.55rem 0.85rem;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    input:focus { border-color: #3a6aaa; }
+
+    button {
+      background: #1a4a8a;
+      border: none;
+      border-radius: 6px;
+      color: #c8d6e8;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 0.55rem 1.1rem;
+      transition: background 0.15s;
+      white-space: nowrap;
+    }
+
+    button:hover { background: #225caa; }
+    button:disabled { background: #1a2a3a; color: var(--muted); cursor: not-allowed; }
+
+    #status {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 1.2rem;
+      min-height: 1.2em;
+    }
+
+    #status.error { color: #c05050; }
+
+    .teams {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      width: 100%;
+      max-width: 700px;
+    }
+
+    .team {
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .team-header {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.5rem 0.85rem;
+    }
+
+    .team.blue .team-header { background: var(--blue-team); }
+    .team.red .team-header { background: var(--red-team); }
+
+    .player-row {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      padding: 0.6rem 0.85rem;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    .team.blue .player-row:hover { background: var(--blue-team-bg); }
+    .team.red .player-row:hover { background: var(--red-team-bg); }
+
+    .role {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      width: 2.5rem;
+      flex-shrink: 0;
+      text-transform: uppercase;
+    }
+
+    .player-name {
+      flex: 1;
+      font-size: 0.88rem;
+      color: var(--text);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .player-name .tag { color: var(--muted); font-size: 0.78rem; }
+
+    .rank-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .rank-badge.challenger { background: rgba(200, 155, 60, 0.18); color: var(--challenger); border: 1px solid rgba(200,155,60,0.35); }
+    .rank-badge.grandmaster { background: rgba(108, 142, 191, 0.18); color: var(--grandmaster); border: 1px solid rgba(108,142,191,0.35); }
+    .rank-badge.master { background: rgba(155, 89, 197, 0.18); color: var(--master); border: 1px solid rgba(155,89,197,0.35); }
+    .rank-badge.unknown { background: rgba(58,74,90,0.3); color: var(--not-found); border: 1px solid var(--border); font-weight: 400; font-style: italic; }
+
+    @media (max-width: 520px) {
+      .teams { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Pre-Reset Ranks</h1>
+  <p class="subtitle">Look up what rank each player had before the April 29 LP reset</p>
+
+  <form id="form">
+    <input id="riot-id" type="text" placeholder="Name#Tag" value="jacob#supp" autocomplete="off" spellcheck="false">
+    <button type="submit" id="btn">Look Up</button>
+  </form>
+
+  <div id="status"></div>
+  <div id="results"></div>
+
+  <script>
+    // Update this after deploying to Render
+    const API_URL = 'https://ranks-current-game-server.onrender.com';
+
+    const ROLES = ['Top', 'JG', 'Mid', 'Bot', 'Sup'];
+
+    let rankMap = new Map();
+
+    async function loadSnapshot() {
+      try {
+        const res = await fetch('players.json');
+        const players = await res.json();
+        for (const p of players) {
+          rankMap.set(`${p.name}#${p.tag}`.toLowerCase(), p);
+        }
+        setStatus(`Snapshot loaded: ${players.length.toLocaleString()} players`);
+      } catch {
+        setStatus('Could not load players.json snapshot', true);
+      }
+    }
+
+    function setStatus(msg, isError = false) {
+      const el = document.getElementById('status');
+      el.textContent = msg;
+      el.className = isError ? 'error' : '';
+    }
+
+    function lookupRank(name, tag) {
+      return rankMap.get(`${name}#${tag}`.toLowerCase()) || null;
+    }
+
+    function badgeHtml(player) {
+      const rank = lookupRank(player.name, player.tag);
+      if (!rank) return `<span class="rank-badge unknown">not in snapshot</span>`;
+      const cls = rank.tier.toLowerCase();
+      const label = `${rank.tier.slice(0, 2)} ${rank.lp} LP`;
+      return `<span class="rank-badge ${cls}">${label}</span>`;
+    }
+
+    function renderTeam(participants, teamId, label, cls) {
+      const team = participants.filter(p => p.teamId === teamId);
+      const rows = team.map(p => `
+        <div class="player-row">
+          <span class="role">${ROLES[p.participantIndex % 5]}</span>
+          <span class="player-name">${escHtml(p.name)}<span class="tag">#${escHtml(p.tag)}</span></span>
+          ${badgeHtml(p)}
+        </div>
+      `).join('');
+      return `
+        <div class="team ${cls}">
+          <div class="team-header">${label}</div>
+          ${rows}
+        </div>
+      `;
+    }
+
+    function escHtml(s) {
+      return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    document.getElementById('form').addEventListener('submit', async e => {
+      e.preventDefault();
+      const riotId = document.getElementById('riot-id').value.trim();
+      if (!riotId) return;
+
+      const btn = document.getElementById('btn');
+      btn.disabled = true;
+      setStatus('Looking up live game…');
+      document.getElementById('results').innerHTML = '';
+
+      try {
+        const res = await fetch(`${API_URL}/api/live-game?riotId=${encodeURIComponent(riotId)}`);
+        const data = await res.json();
+        if (!res.ok) {
+          setStatus(data.error || `Error ${res.status}`, true);
+          return;
+        }
+        setStatus(`Game found — ${data.length} participants`);
+        document.getElementById('results').innerHTML = `
+          <div class="teams">
+            ${renderTeam(data, 100, 'Blue Team', 'blue')}
+            ${renderTeam(data, 200, 'Red Team', 'red')}
+          </div>
+        `;
+      } catch {
+        setStatus('Could not reach the server', true);
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    loadSnapshot();
+  </script>
+</body>
+</html>
