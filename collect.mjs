@@ -120,12 +120,7 @@ async function fetchLeague(tier) {
     MASTER: '/lol/league/v4/masterleagues/by-queue/RANKED_SOLO_5x5',
   }[tier];
   const data = await riotFetch(`${NA}${path}`);
-  return data.entries.map(e => ({ summonerId: e.summonerId, lp: e.leaguePoints, tier }));
-}
-
-async function getSummonerPuuid(summonerId) {
-  const data = await riotFetch(`${NA}/lol/summoner/v4/summoners/${encodeURIComponent(summonerId)}`);
-  return data.puuid;
+  return data.entries.map(e => ({ puuid: e.puuid, lp: e.leaguePoints, tier }));
 }
 
 async function getAccountByPuuid(puuid) {
@@ -154,7 +149,7 @@ async function main() {
   ]);
 
   const all = [...challenger, ...grandmaster, ...master];
-  const todo = all.filter(e => !done.has(e.summonerId));
+  const todo = all.filter(e => !done.has(e.puuid));
   console.log(`Total: ${all.length} | Already done: ${done.size} | Remaining: ${todo.length}`);
 
   if (todo.length === 0) {
@@ -168,12 +163,11 @@ async function main() {
   for (let i = 0; i < todo.length; i++) {
     const entry = todo[i];
     try {
-      const puuid = await getSummonerPuuid(entry.summonerId);
-      const { name, tag } = await getAccountByPuuid(puuid);
+      const { name, tag } = await getAccountByPuuid(entry.puuid);
       players.push({ name, tag, tier: entry.tier, lp: entry.lp });
-      done.add(entry.summonerId);
+      done.add(entry.puuid);
     } catch (err) {
-      console.error(`  error for ${entry.summonerId}: ${err.message}`);
+      console.error(`  error for ${entry.puuid}: ${err.message}`);
     }
 
     if ((i + 1) % 100 === 0 || i === todo.length - 1) {
@@ -181,7 +175,7 @@ async function main() {
       const rate = ((i + 1) / elapsed).toFixed(0);
       console.log(`  ${i + 1}/${todo.length} | ${players.length} players | ${elapsed}m elapsed | ~${rate}/min`);
 
-      const doneObj = Object.fromEntries([...done].map(id => [id, true]));
+      const doneObj = Object.fromEntries([...done].map(puuid => [puuid, true]));
       await writeFile(PROGRESS_FILE, JSON.stringify({ done: doneObj, players }, null, 2));
     }
   }
