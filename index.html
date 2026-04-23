@@ -1,11 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pre-Reset Ranks</title>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     :root {
       --bg: #0a0e17;
@@ -69,7 +76,9 @@
       transition: border-color 0.15s;
     }
 
-    input:focus { border-color: #3a6aaa; }
+    input:focus {
+      border-color: #3a6aaa;
+    }
 
     button {
       background: #1a4a8a;
@@ -84,8 +93,15 @@
       white-space: nowrap;
     }
 
-    button:hover { background: #225caa; }
-    button:disabled { background: #1a2a3a; color: var(--muted); cursor: not-allowed; }
+    button:hover {
+      background: #225caa;
+    }
+
+    button:disabled {
+      background: #1a2a3a;
+      color: var(--muted);
+      cursor: not-allowed;
+    }
 
     #status {
       font-size: 0.85rem;
@@ -94,7 +110,9 @@
       min-height: 1.2em;
     }
 
-    #status.error { color: #c05050; }
+    #status.error {
+      color: #c05050;
+    }
 
     .teams {
       display: grid;
@@ -118,8 +136,13 @@
       padding: 0.5rem 0.85rem;
     }
 
-    .team.blue .team-header { background: var(--blue-team); }
-    .team.red .team-header { background: var(--red-team); }
+    .team.blue .team-header {
+      background: var(--blue-team);
+    }
+
+    .team.red .team-header {
+      background: var(--red-team);
+    }
 
     .player-row {
       display: flex;
@@ -130,8 +153,13 @@
       background: var(--surface);
     }
 
-    .team.blue .player-row:hover { background: var(--blue-team-bg); }
-    .team.red .player-row:hover { background: var(--red-team-bg); }
+    .team.blue .player-row:hover {
+      background: var(--blue-team-bg);
+    }
+
+    .team.red .player-row:hover {
+      background: var(--red-team-bg);
+    }
 
     .role {
       font-size: 0.7rem;
@@ -152,7 +180,10 @@
       white-space: nowrap;
     }
 
-    .player-name .tag { color: var(--muted); font-size: 0.78rem; }
+    .player-name .tag {
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
 
     .rank-badge {
       font-size: 0.75rem;
@@ -163,16 +194,40 @@
       flex-shrink: 0;
     }
 
-    .rank-badge.challenger { background: rgba(200, 155, 60, 0.18); color: var(--challenger); border: 1px solid rgba(200,155,60,0.35); }
-    .rank-badge.grandmaster { background: rgba(108, 142, 191, 0.18); color: var(--grandmaster); border: 1px solid rgba(108,142,191,0.35); }
-    .rank-badge.master { background: rgba(155, 89, 197, 0.18); color: var(--master); border: 1px solid rgba(155,89,197,0.35); }
-    .rank-badge.unknown { background: rgba(58,74,90,0.3); color: var(--not-found); border: 1px solid var(--border); font-weight: 400; font-style: italic; }
+    .rank-badge.challenger {
+      background: rgba(200, 155, 60, 0.18);
+      color: var(--challenger);
+      border: 1px solid rgba(200, 155, 60, 0.35);
+    }
+
+    .rank-badge.grandmaster {
+      background: rgba(108, 142, 191, 0.18);
+      color: var(--grandmaster);
+      border: 1px solid rgba(108, 142, 191, 0.35);
+    }
+
+    .rank-badge.master {
+      background: rgba(155, 89, 197, 0.18);
+      color: var(--master);
+      border: 1px solid rgba(155, 89, 197, 0.35);
+    }
+
+    .rank-badge.unknown {
+      background: rgba(58, 74, 90, 0.3);
+      color: var(--not-found);
+      border: 1px solid var(--border);
+      font-weight: 400;
+      font-style: italic;
+    }
 
     @media (max-width: 520px) {
-      .teams { grid-template-columns: 1fr; }
+      .teams {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
+
 <body>
   <h1>Pre-Reset Ranks</h1>
   <p class="subtitle">Look up what rank each player had before the April 29 LP reset</p>
@@ -187,7 +242,7 @@
 
   <script>
     // Update this after deploying to Render
-    const API_URL = 'https://ranks-current-game-server.onrender.com';
+    const API_URL = 'https://ranks-current-game.onrender.com';
 
     const ROLES = ['Top', 'JG', 'Mid', 'Bot', 'Sup'];
 
@@ -218,7 +273,7 @@
 
     function badgeHtml(player) {
       const rank = lookupRank(player.name, player.tag);
-      if (!rank) return `<span class="rank-badge unknown">not in snapshot</span>`;
+      if (!rank) return `<span class="rank-badge unknown">&lt; 12 LP Master</span>`;
       const cls = rank.tier.toLowerCase();
       const label = `${rank.tier.slice(0, 2)} ${rank.lp} LP`;
       return `<span class="rank-badge ${cls}">${label}</span>`;
@@ -279,4 +334,5 @@
     loadSnapshot();
   </script>
 </body>
+
 </html>
