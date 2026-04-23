@@ -97,14 +97,28 @@ const limiter = new RateLimiter();
 const NA = 'https://na1.api.riotgames.com';
 const AMERICAS = 'https://americas.api.riotgames.com';
 
-async function riotFetch(url) {
+async function riotFetch(url, attempt = 0) {
   await limiter.waitForToken();
-  const res = await fetch(url, { headers: { 'X-Riot-Token': API_KEY } });
+  let res;
+  try {
+    res = await fetch(url, {
+      headers: { 'X-Riot-Token': API_KEY },
+      signal: AbortSignal.timeout(10_000),
+    });
+  } catch (err) {
+    if (attempt < 3) {
+      const wait = 2000 * (attempt + 1);
+      console.log(`[net] fetch failed (${err.message}), retry ${attempt + 1}/3 in ${wait / 1000}s`);
+      await sleep(wait);
+      return riotFetch(url, attempt + 1);
+    }
+    throw err;
+  }
   limiter.onHeaders(res.headers);
   if (res.status === 429) {
     console.log('[rate] 429 — waiting before retry');
     await sleep(limiter.waitTime());
-    return riotFetch(url);
+    return riotFetch(url, attempt);
   }
   if (!res.ok) {
     const body = await res.text();
@@ -170,10 +184,12 @@ async function main() {
       console.error(`  error for ${entry.puuid}: ${err.message}`);
     }
 
-    if ((i + 1) % 100 === 0 || i === todo.length - 1) {
+    if ((i + 1) % 25 === 0 || i === todo.length - 1) {
       const elapsed = ((Date.now() - startTime) / 1000 / 60).toFixed(1);
-      const rate = ((i + 1) / elapsed).toFixed(0);
-      console.log(`  ${i + 1}/${todo.length} | ${players.length} players | ${elapsed}m elapsed | ~${rate}/min`);
+      const pct = (((i + 1) / todo.length) * 100).toFixed(1);
+      const rate = elapsed > 0 ? ((i + 1) / elapsed).toFixed(0) : '…';
+      const eta = rate > 0 ? ((todo.length - i - 1) / rate).toFixed(0) : '…';
+      console.log(`  ${i + 1}/${todo.length} (${pct}%) | ${players.length} players | ${elapsed}m elapsed | ~${rate}/min | ETA ~${eta}m`);
 
       const doneObj = Object.fromEntries([...done].map(puuid => [puuid, true]));
       await writeFile(PROGRESS_FILE, JSON.stringify({ done: doneObj, players }, null, 2));
