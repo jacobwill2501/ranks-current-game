@@ -58,6 +58,7 @@ app.get('/api/live-game', async (req, res) => {
     const summoner = await riotFetch(
       `${NA}/lol/summoner/v4/summoners/by-puuid/${account.puuid}`
     );
+    console.log('[debug] summoner keys:', Object.keys(summoner));
 
     const game = await riotFetch(
       `${NA}/lol/spectator/v5/active-games/by-summoner/${summoner.id}`
