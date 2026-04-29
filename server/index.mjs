@@ -55,8 +55,12 @@ app.get('/api/live-game', async (req, res) => {
       `${AMERICAS}/riot/account/v1/accounts/by-riot-id/${encodeURIComponent(gameName)}/${encodeURIComponent(tagLine)}`
     );
 
+    const summoner = await riotFetch(
+      `${NA}/lol/summoner/v4/summoners/by-puuid/${account.puuid}`
+    );
+
     const game = await riotFetch(
-      `${NA}/lol/spectator/v5/active-games/by-puuid/${account.puuid}`
+      `${NA}/lol/spectator/v5/active-games/by-summoner/${summoner.id}`
     );
 
     const participants = await Promise.all(
