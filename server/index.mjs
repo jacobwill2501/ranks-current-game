@@ -22,7 +22,9 @@ const NA = 'https://na1.api.riotgames.com';
 const AMERICAS = 'https://americas.api.riotgames.com';
 
 async function riotFetch(url) {
+  console.log(`[riot] GET ${url}`);
   const res = await fetch(url, { headers: { 'X-Riot-Token': API_KEY } });
+  console.log(`[riot] ${res.status} ${url}`);
   if (res.status === 429) {
     const wait = parseInt(res.headers.get('retry-after') || '1', 10) * 1000;
     console.log(`[rate] 429 — waiting ${wait}ms`);
@@ -31,6 +33,7 @@ async function riotFetch(url) {
   }
   if (!res.ok) {
     const body = await res.text();
+    console.error(`[riot] ERROR ${res.status} on ${url} — body: ${body}`);
     throw new Error(`Riot API ${res.status}: ${body}`);
   }
   return res.json();
@@ -49,6 +52,7 @@ app.get('/api/live-game', async (req, res) => {
   }
   const gameName = riotId.slice(0, hash);
   const tagLine = riotId.slice(hash + 1);
+  console.log(`[live-game] lookup: ${gameName}#${tagLine}`);
 
   try {
     const account = await riotFetch(
@@ -56,7 +60,7 @@ app.get('/api/live-game', async (req, res) => {
     );
 
     const game = await riotFetch(
-      `${NA}/lol/spectator/v5/active-games/by-puuid/${account.puuid}`
+      `${NA}/lol/spectator/v5/active-games/by-summoner/${account.puuid}`
     );
 
     const participants = await Promise.all(
