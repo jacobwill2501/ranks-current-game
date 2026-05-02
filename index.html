@@ -563,6 +563,7 @@
     let rankMap = new Map();
     let ddVersion = '15.9.1'; // fallback, overwritten on load
     let currentPuuid = null;
+    let matchEpoch = 0; // incremented on every loadMatchHistory call; stale callbacks self-discard
     const rankCache = new Map(); // puuid → current rank | null | 'loading'
 
     // ── DDragon ──────────────────────────────────────────
@@ -732,6 +733,7 @@
     }
 
     async function loadMatchHistory(puuid, start) {
+      const epoch = ++matchEpoch;
       const section = document.getElementById('match-history');
       const pagination = document.getElementById('match-pagination');
 
@@ -777,11 +779,13 @@
         fetch(`${API_URL}/api/match?matchId=${encodeURIComponent(matchId)}`)
           .then(r => r.ok ? r.json() : Promise.reject())
           .then(match => {
+            if (matchEpoch !== epoch) return;
             document.getElementById(`skeleton-${i}`)?.replaceWith(buildMatchCard(match, puuid));
             resolved++;
             if (resolved === total) renderPagination(puuid, start, total);
           })
           .catch(() => {
+            if (matchEpoch !== epoch) return;
             document.getElementById(`skeleton-${i}`)?.remove();
             resolved++;
             if (resolved === total) renderPagination(puuid, start, total);
