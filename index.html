@@ -736,10 +736,8 @@
         return;
       }
 
-      document.getElementById('match-spinner')?.remove();
-
       if (!matchIds || matchIds.length === 0) {
-        section.innerHTML += `<div class="match-empty">No ranked solo matches found.</div>`;
+        document.getElementById('match-spinner').textContent = 'No ranked solo matches found.';
         if (start > 0) renderPagination(puuid, start, 0);
         return;
       }
