@@ -112,7 +112,7 @@ app.get('/api/match-history-ids', async (req, res) => {
 
   try {
     const matchIds = await riotFetch(
-      `${AMERICAS}/lol/match/v5/matches/by-puuid/${puuid}/ids?queue=420&count=10&start=${start}`
+      `${AMERICAS}/lol/match/v5/matches/by-puuid/${puuid}/ids?queue=420&count=5&start=${start}`
     );
     res.json({ matchIds });
   } catch (err) {
