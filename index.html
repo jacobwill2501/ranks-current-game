@@ -898,24 +898,24 @@
     function renderPagination(puuid, start, count) {
       const pagination = document.getElementById('match-pagination');
       const hasPrev = start > 0;
-      const hasNext = count === 10;
+      const hasNext = count === 5;
       if (!hasPrev && !hasNext) return;
 
       pagination.innerHTML = `
         <div class="pagination-wrap">
-          <button id="prev-page-btn" ${hasPrev ? '' : 'disabled'}>← Prev 10</button>
-          <button id="next-page-btn" ${hasNext ? '' : 'disabled'}>Next 10 →</button>
+          <button id="prev-page-btn" ${hasPrev ? '' : 'disabled'}>← Prev 5</button>
+          <button id="next-page-btn" ${hasNext ? '' : 'disabled'}>Next 5 →</button>
         </div>
       `;
 
       if (hasPrev) {
         document.getElementById('prev-page-btn').addEventListener('click', () => {
-          loadMatchHistory(puuid, start - 10);
+          loadMatchHistory(puuid, start - 5);
         });
       }
       if (hasNext) {
         document.getElementById('next-page-btn').addEventListener('click', () => {
-          loadMatchHistory(puuid, start + 10);
+          loadMatchHistory(puuid, start + 5);
         });
       }
     }
