@@ -264,6 +264,17 @@
       text-transform: uppercase;
       color: var(--muted);
       margin-bottom: 0.75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    #match-time-estimate {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0;
+      color: var(--muted);
+      text-transform: none;
     }
 
     .match-spinner,
@@ -738,7 +749,10 @@
       const pagination = document.getElementById('match-pagination');
 
       section.innerHTML = `
-        <div class="match-history-header">MATCH HISTORY — Ranked Solo</div>
+        <div class="match-history-header">
+          MATCH HISTORY — Ranked Solo
+          <span id="match-time-estimate"></span>
+        </div>
         <div id="match-spinner" class="match-spinner">Loading…</div>
       `;
       pagination.innerHTML = '';
@@ -774,21 +788,45 @@
 
       let resolved = 0;
       const total = matchIds.length;
+      const loadStart = Date.now();
+      let maxWaitedMs = 0;
+      let networkBaseline = null;
+      let timerInterval = null;
+
+      function updateEstimate() {
+        const el = document.getElementById('match-time-estimate');
+        if (!el || networkBaseline === null || maxWaitedMs === 0) return;
+        const remaining = Math.max(0, networkBaseline + maxWaitedMs - (Date.now() - loadStart));
+        el.textContent = remaining < 500 ? 'almost done…' : `~${Math.ceil(remaining / 1000)}s left`;
+      }
+
+      function finishLoading() {
+        clearInterval(timerInterval);
+        const el = document.getElementById('match-time-estimate');
+        if (el) el.textContent = '';
+      }
 
       matchIds.forEach((matchId, i) => {
         fetch(`${API_URL}/api/match?matchId=${encodeURIComponent(matchId)}`)
           .then(r => r.ok ? r.json() : Promise.reject())
           .then(match => {
             if (matchEpoch !== epoch) return;
+            const waited = match.waitedMs ?? 0;
+            if (networkBaseline === null) {
+              networkBaseline = Math.max(0, (Date.now() - loadStart) - waited);
+              timerInterval = setInterval(updateEstimate, 200);
+            }
+            maxWaitedMs = Math.max(maxWaitedMs, waited);
+            updateEstimate();
             document.getElementById(`skeleton-${i}`)?.replaceWith(buildMatchCard(match, puuid));
             resolved++;
-            if (resolved === total) renderPagination(puuid, start, total);
+            if (resolved === total) { finishLoading(); renderPagination(puuid, start, total); }
           })
           .catch(() => {
             if (matchEpoch !== epoch) return;
             document.getElementById(`skeleton-${i}`)?.remove();
             resolved++;
-            if (resolved === total) renderPagination(puuid, start, total);
+            if (resolved === total) { finishLoading(); renderPagination(puuid, start, total); }
           });
       });
     }

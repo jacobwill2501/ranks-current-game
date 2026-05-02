@@ -21,15 +21,16 @@ app.use(express.json());
 const NA = 'https://na1.api.riotgames.com';
 const AMERICAS = 'https://americas.api.riotgames.com';
 
-async function riotFetch(url) {
+async function riotFetch(url, stats = null) {
   console.log(`[riot] GET ${url}`);
   const res = await fetch(url, { headers: { 'X-Riot-Token': API_KEY } });
   console.log(`[riot] ${res.status} ${url}`);
   if (res.status === 429) {
     const wait = parseInt(res.headers.get('retry-after') || '1', 10) * 1000;
     console.log(`[rate] 429 — waiting ${wait}ms`);
+    if (stats) stats.waitedMs += wait;
     await new Promise(r => setTimeout(r, wait));
-    return riotFetch(url);
+    return riotFetch(url, stats);
   }
   if (!res.ok) {
     const body = await res.text();
@@ -130,12 +131,13 @@ app.get('/api/match', async (req, res) => {
   if (!matchId) return res.status(400).json({ error: 'Missing matchId' });
 
   try {
-    const match = await riotFetch(`${AMERICAS}/lol/match/v5/matches/${matchId}`);
+    const stats = { waitedMs: 0 };
+    const match = await riotFetch(`${AMERICAS}/lol/match/v5/matches/${matchId}`, stats);
 
     const participants = await Promise.all(
       match.info.participants.map(async p => {
         const acct = await riotFetch(
-          `${AMERICAS}/riot/account/v1/accounts/by-puuid/${p.puuid}`
+          `${AMERICAS}/riot/account/v1/accounts/by-puuid/${p.puuid}`, stats
         );
         return {
           puuid: p.puuid,
@@ -159,6 +161,7 @@ app.get('/api/match', async (req, res) => {
     );
 
     res.json({
+      waitedMs: stats.waitedMs,
       matchId: match.metadata.matchId,
       gameDuration: match.info.gameDuration,
       gameStartTimestamp: match.info.gameStartTimestamp,
