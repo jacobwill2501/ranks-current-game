@@ -373,6 +373,26 @@
       transform: rotate(180deg);
     }
 
+    /* ── Skeleton loading cards ─────────────────────────── */
+    @keyframes shimmer {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    .sk {
+      display: inline-block;
+      background: linear-gradient(90deg, var(--border) 25%, #253a55 50%, var(--border) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s ease-in-out infinite;
+      flex-shrink: 0;
+      border-radius: 4px;
+    }
+
+    .sk-chip   { width: 42px; height: 22px; }
+    .sk-circle { width: 38px; height: 38px; border-radius: 50%; }
+    .sk-text   { height: 14px; }
+    .sk-sm     { height: 12px; }
+
     /* ── Team section inside expanded card ──────────────── */
     .match-team-section {
       margin-bottom: 12px;
@@ -717,7 +737,7 @@
 
       section.innerHTML = `
         <div class="match-history-header">MATCH HISTORY — Ranked Solo</div>
-        <div id="match-spinner" class="match-spinner">Loading match history…</div>
+        <div id="match-spinner" class="match-spinner">Loading…</div>
       `;
       pagination.innerHTML = '';
 
@@ -736,48 +756,57 @@
         return;
       }
 
+      document.getElementById('match-spinner')?.remove();
+
       if (!matchIds || matchIds.length === 0) {
-        document.getElementById('match-spinner').textContent = 'No ranked solo matches found.';
+        section.innerHTML += `<div class="match-empty">No ranked solo matches found.</div>`;
         if (start > 0) renderPagination(puuid, start, 0);
         return;
       }
 
-      const total = matchIds.length;
+      // Show skeleton placeholders immediately
+      const cardsContainer = document.createElement('div');
+      cardsContainer.id = 'match-cards';
+      section.appendChild(cardsContainer);
+      matchIds.forEach((_, i) => cardsContainer.appendChild(createSkeletonCard(i)));
+
       let resolved = 0;
-      const buffer = [];
+      const total = matchIds.length;
 
-      document.getElementById('match-spinner').textContent = `Loading 0 / ${total}…`;
-
-      matchIds.forEach(matchId => {
+      matchIds.forEach((matchId, i) => {
         fetch(`${API_URL}/api/match?matchId=${encodeURIComponent(matchId)}`)
           .then(r => r.ok ? r.json() : Promise.reject())
           .then(match => {
-            buffer.push(match);
+            document.getElementById(`skeleton-${i}`)?.replaceWith(buildMatchCard(match, puuid));
             resolved++;
-            document.getElementById('match-spinner').textContent = `Loading ${resolved} / ${total}…`;
-            if (resolved === total) onAllMatchesLoaded(section, buffer, puuid, start, total);
+            if (resolved === total) renderPagination(puuid, start, total);
           })
           .catch(() => {
+            document.getElementById(`skeleton-${i}`)?.remove();
             resolved++;
-            document.getElementById('match-spinner').textContent = `Loading ${resolved} / ${total}…`;
-            if (resolved === total) onAllMatchesLoaded(section, buffer, puuid, start, total);
+            if (resolved === total) renderPagination(puuid, start, total);
           });
       });
     }
 
-    function onAllMatchesLoaded(section, buffer, puuid, start, total) {
-      document.getElementById('match-spinner')?.remove();
-      const cards = document.createElement('div');
-      cards.id = 'match-cards';
-      section.appendChild(cards);
-      buffer.forEach(match => appendMatchCard(match, puuid));
-      renderPagination(puuid, start, total);
+    function createSkeletonCard(index) {
+      const card = document.createElement('div');
+      card.className = 'match-card';
+      card.id = `skeleton-${index}`;
+      card.innerHTML = `
+        <div class="match-summary" style="pointer-events:none">
+          <span class="sk sk-chip"></span>
+          <span class="sk sk-circle"></span>
+          <span class="sk sk-text" style="width:90px"></span>
+          <span class="sk sk-text" style="width:30px"></span>
+          <span class="sk sk-text" style="width:55px"></span>
+          <span class="sk sk-sm" style="width:140px;margin-left:auto"></span>
+        </div>
+      `;
+      return card;
     }
 
-    function appendMatchCard(match, searchedPuuid) {
-      const cards = document.getElementById('match-cards');
-      if (!cards) return;
-
+    function buildMatchCard(match, searchedPuuid) {
       const me = match.participants.find(p => p.puuid === searchedPuuid)
         || match.participants[0];
 
@@ -810,7 +839,6 @@
         card.classList.toggle('expanded');
       });
 
-      // Attach rank hover listeners
       card.querySelectorAll('.rank-hoverable').forEach(badge => {
         const bPuuid = badge.dataset.puuid;
         const preReset = badge.dataset.preReset;
@@ -838,7 +866,7 @@
         });
       });
 
-      cards.appendChild(card);
+      return card;
     }
 
     function buildTeamTable(participants, teamId, searchedPuuid) {
