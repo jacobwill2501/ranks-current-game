@@ -80,15 +80,19 @@ app.get('/api/live-game', async (req, res) => {
     if (inGame && game) {
       participants = await Promise.all(
         game.participants.map(async (p, idx) => {
-          const acct = await riotFetch(
-            `${AMERICAS}/riot/account/v1/accounts/by-puuid/${p.puuid}`
-          );
-          return {
-            name: acct.gameName,
-            tag: acct.tagLine,
-            teamId: p.teamId,
-            participantIndex: idx,
-          };
+          let name = 'Unknown', tag = '???';
+          if (p.puuid) {
+            try {
+              const acct = await riotFetch(
+                `${AMERICAS}/riot/account/v1/accounts/by-puuid/${p.puuid}`
+              );
+              name = acct.gameName;
+              tag = acct.tagLine;
+            } catch {
+              // hidden participant (streamer mode, etc.)
+            }
+          }
+          return { name, tag, teamId: p.teamId, participantIndex: idx };
         })
       );
     }
