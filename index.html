@@ -248,6 +248,306 @@
         grid-template-columns: 1fr;
       }
     }
+
+    /* ── Not-in-game placeholder ────────────────────────── */
+    .not-in-game {
+      color: var(--muted);
+      font-size: 0.9rem;
+      padding: 1.2rem 0;
+      max-width: 700px;
+      width: 100%;
+      text-align: center;
+      border: 1px dashed var(--border);
+      border-radius: 10px;
+    }
+
+    /* ── Match history wrapper ──────────────────────────── */
+    #match-history,
+    #match-pagination {
+      width: 100%;
+      max-width: 940px;
+      margin-top: 1.5rem;
+    }
+
+    .match-history-header {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.75rem;
+    }
+
+    .match-spinner,
+    .match-empty {
+      color: var(--muted);
+      font-size: 0.85rem;
+      padding: 0.8rem 0;
+    }
+
+    /* ── Match cards ────────────────────────────────────── */
+    .match-card {
+      border-radius: 14px;
+      border-left: 4px solid var(--border);
+      margin-bottom: 10px;
+      background: var(--surface);
+      overflow: hidden;
+    }
+
+    .match-card.win {
+      border-left-color: #22c55e;
+    }
+
+    .match-card.loss {
+      border-left-color: #ef4444;
+    }
+
+    .match-summary {
+      padding: 10px 14px;
+      cursor: pointer;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      user-select: none;
+    }
+
+    .match-summary:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .match-details {
+      display: none;
+      padding: 0 14px 14px;
+    }
+
+    .match-card.expanded .match-details {
+      display: block;
+    }
+
+    /* ── Summary row pieces ─────────────────────────────── */
+    .match-wl-chip {
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+    }
+
+    .match-wl-chip.win {
+      background: rgba(34, 197, 94, 0.15);
+      color: #22c55e;
+    }
+
+    .match-wl-chip.loss {
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+    }
+
+    .match-champ-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .match-champ-name {
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+
+    .match-role-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .match-kda-text {
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .match-meta {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-left: auto;
+    }
+
+    .match-chevron {
+      font-size: 0.85rem;
+      color: var(--muted);
+      transition: transform 0.2s;
+    }
+
+    .match-card.expanded .match-chevron {
+      transform: rotate(180deg);
+    }
+
+    /* ── Team section inside expanded card ──────────────── */
+    .match-team-section {
+      margin-bottom: 12px;
+      overflow-x: auto;
+    }
+
+    .match-team-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      margin: 10px 0 6px;
+    }
+
+    .match-team-label.victory {
+      color: #22c55e;
+    }
+
+    .match-team-label.defeat {
+      color: #ef4444;
+    }
+
+    /* ── Stats table ────────────────────────────────────── */
+    .match-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.78rem;
+    }
+
+    .match-table th {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+      padding: 3px 6px;
+      font-weight: 700;
+    }
+
+    .match-table td {
+      padding: 4px 6px;
+      border-bottom: 1px solid rgba(30, 45, 69, 0.5);
+    }
+
+    .match-table tr.highlighted td {
+      background: rgba(99, 102, 241, 0.12);
+    }
+
+    .match-table th.num,
+    .match-table td.num {
+      text-align: center;
+    }
+
+    .p-name {
+      font-weight: 600;
+    }
+
+    .p-tag {
+      color: var(--muted);
+      font-size: 0.7rem;
+      margin-left: 1px;
+    }
+
+    .champ-cell {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .champ-icon-sm {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .items-cell {
+      display: flex;
+      gap: 2px;
+      align-items: center;
+    }
+
+    .item-icon {
+      width: 22px;
+      height: 22px;
+      border-radius: 3px;
+      border: 1px solid var(--border);
+    }
+
+    .item-empty {
+      width: 22px;
+      height: 22px;
+      border-radius: 3px;
+      border: 1px solid var(--border);
+      background: rgba(30, 45, 69, 0.5);
+      display: inline-block;
+    }
+
+    /* ── Rank badge tooltip (match history only) ────────── */
+    .rank-hoverable {
+      position: relative;
+      cursor: default;
+    }
+
+    .rank-tooltip {
+      display: none;
+      position: absolute;
+      bottom: calc(100% + 5px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: #0a0e17;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 4px 10px;
+      white-space: nowrap;
+      font-size: 0.72rem;
+      z-index: 100;
+      pointer-events: none;
+      color: var(--text);
+    }
+
+    .rank-hoverable:hover .rank-tooltip {
+      display: block;
+    }
+
+    /* ── Progress bar ───────────────────────────────────── */
+    .match-progress-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .match-progress-bar {
+      flex: 1;
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .match-progress-fill {
+      height: 100%;
+      background: #6366f1;
+      border-radius: 2px;
+      transition: width 0.3s ease;
+    }
+
+    .match-progress-label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    /* ── Pagination ─────────────────────────────────────── */
+    .pagination-wrap {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 4px;
+      margin-bottom: 2rem;
+    }
   </style>
 </head>
 
@@ -269,15 +569,40 @@
 
   <div id="status"></div>
   <div id="results"></div>
+  <div id="match-history"></div>
+  <div id="match-pagination"></div>
 
   <script>
-    // Update this after deploying to Render
     const API_URL = 'https://ranks-current-game.onrender.com';
 
     const ROLES = ['Top', 'JG', 'Mid', 'Bot', 'Sup'];
 
-    let rankMap = new Map();
+    const POSITION_LABELS = {
+      TOP: 'Top', JUNGLE: 'JG', MIDDLE: 'Mid', BOTTOM: 'Bot', UTILITY: 'Sup',
+    };
 
+    let rankMap = new Map();
+    let ddVersion = '15.9.1'; // fallback, overwritten on load
+    let currentPuuid = null;
+    const rankCache = new Map(); // puuid → current rank | null | 'loading'
+
+    // ── DDragon ──────────────────────────────────────────
+    async function loadDDragonVersion() {
+      try {
+        const versions = await fetch('https://ddragon.leagueoflegends.com/api/versions.json').then(r => r.json());
+        ddVersion = versions[0];
+      } catch { /* use fallback */ }
+    }
+
+    function championIconUrl(name) {
+      return `https://ddragon.leagueoflegends.com/cdn/${ddVersion}/img/champion/${name}.png`;
+    }
+
+    function itemIconUrl(id) {
+      return `https://ddragon.leagueoflegends.com/cdn/${ddVersion}/img/item/${id}.png`;
+    }
+
+    // ── Snapshot ─────────────────────────────────────────
     async function loadSnapshot() {
       try {
         const res = await fetch('players.json');
@@ -291,16 +616,18 @@
       }
     }
 
-    function setStatus(msg, isError = false) {
-      const el = document.getElementById('status');
-      el.textContent = msg;
-      el.className = isError ? 'error' : '';
-    }
-
     function lookupRank(name, tag) {
       return rankMap.get(`${name}#${tag}`.toLowerCase()) || null;
     }
 
+    function preResetFullLabel(rank) {
+      if (!rank) return '< 12 LP Master';
+      const { tier, lp } = rank;
+      const t = tier.charAt(0) + tier.slice(1).toLowerCase();
+      return `${t} ${lp} LP`;
+    }
+
+    // ── Live game badge (no tooltip) ─────────────────────
     function badgeHtml(player) {
       const rank = lookupRank(player.name, player.tag);
       if (!rank) return `<span class="rank-badge unknown">&lt; 12 LP Master</span>`;
@@ -309,6 +636,49 @@
       return `<span class="rank-badge ${cls}">${label}</span>`;
     }
 
+    // ── Match history badge (with hover tooltip) ─────────
+    function rankBadgeWithTooltip(name, tag, puuid) {
+      const rank = lookupRank(name, tag);
+      const cls = rank ? rank.tier.toLowerCase() : 'unknown';
+      const shortLabel = rank ? `${rank.tier.slice(0, 2)} ${rank.lp} LP` : '&lt; 12 LP Master';
+      const fullLabel = preResetFullLabel(rank);
+      return `<span class="rank-badge ${cls} rank-hoverable" data-puuid="${escHtml(puuid)}" data-pre-reset="${escHtml(fullLabel)}">${shortLabel}<span class="rank-tooltip"></span></span>`;
+    }
+
+    // ── Format helpers ────────────────────────────────────
+    function formatDuration(seconds) {
+      const m = Math.floor(seconds / 60);
+      const s = seconds % 60;
+      return `${m}:${s.toString().padStart(2, '0')}`;
+    }
+
+    function formatDate(ts) {
+      return new Date(ts).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }
+
+    function formatCurrentRank(rank) {
+      if (!rank || rank === 'loading') return 'Unranked';
+      const { tier, division, lp } = rank;
+      const t = tier.charAt(0) + tier.slice(1).toLowerCase();
+      if (['Challenger', 'Grandmaster', 'Master'].includes(t)) return `${t} ${lp} LP`;
+      return `${t} ${division} ${lp} LP`;
+    }
+
+    function escHtml(s) {
+      return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function setStatus(msg, isError = false) {
+      const el = document.getElementById('status');
+      el.textContent = msg;
+      el.className = isError ? 'error' : '';
+    }
+
+    // ── Live game rendering ───────────────────────────────
     function renderTeam(participants, teamId, label, cls) {
       const team = participants.filter(p => p.teamId === teamId);
       const rows = team.map(p => `
@@ -326,10 +696,7 @@
       `;
     }
 
-    function escHtml(s) {
-      return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    }
-
+    // ── Form submission ───────────────────────────────────
     document.getElementById('form').addEventListener('submit', async e => {
       e.preventDefault();
       const riotId = document.getElementById('riot-id').value.trim();
@@ -337,8 +704,9 @@
 
       const btn = document.getElementById('btn');
       btn.disabled = true;
-      setStatus('Looking up live game…');
+      setStatus('Looking up…');
       document.getElementById('results').innerHTML = '';
+      clearMatchHistory();
 
       try {
         const res = await fetch(`${API_URL}/api/live-game?riotId=${encodeURIComponent(riotId)}`);
@@ -347,13 +715,25 @@
           setStatus(data.error || `Error ${res.status}`, true);
           return;
         }
-        setStatus(`Game found — ${data.length} participants`);
-        document.getElementById('results').innerHTML = `
-          <div class="teams">
-            ${renderTeam(data, 100, 'Blue Team', 'blue')}
-            ${renderTeam(data, 200, 'Red Team', 'red')}
-          </div>
-        `;
+
+        currentPuuid = data.puuid;
+
+        if (data.inGame) {
+          setStatus(`In game — ${data.participants.length} participants`);
+          document.getElementById('results').innerHTML = `
+            <div class="teams">
+              ${renderTeam(data.participants, 100, 'Blue Team', 'blue')}
+              ${renderTeam(data.participants, 200, 'Red Team', 'red')}
+            </div>
+          `;
+        } else {
+          setStatus('Not currently in a live game');
+          document.getElementById('results').innerHTML = `
+            <div class="not-in-game">Not currently in a live game</div>
+          `;
+        }
+
+        loadMatchHistory(currentPuuid, 0);
       } catch {
         setStatus('Could not reach the server', true);
       } finally {
@@ -368,6 +748,240 @@
       });
     });
 
+    // ── Match history ─────────────────────────────────────
+    function clearMatchHistory() {
+      document.getElementById('match-history').innerHTML = '';
+      document.getElementById('match-pagination').innerHTML = '';
+    }
+
+    async function loadMatchHistory(puuid, start) {
+      const section = document.getElementById('match-history');
+      const pagination = document.getElementById('match-pagination');
+
+      section.innerHTML = `
+        <div class="match-history-header">MATCH HISTORY — Ranked Solo</div>
+        <div id="match-spinner" class="match-spinner">Loading match history…</div>
+      `;
+      pagination.innerHTML = '';
+
+      let matchIds;
+      try {
+        const res = await fetch(
+          `${API_URL}/api/match-history-ids?puuid=${encodeURIComponent(puuid)}&start=${start}`
+        );
+        if (!res.ok) {
+          document.getElementById('match-spinner').textContent = 'Could not load match history.';
+          return;
+        }
+        ({ matchIds } = await res.json());
+      } catch {
+        document.getElementById('match-spinner').textContent = 'Could not load match history.';
+        return;
+      }
+
+      document.getElementById('match-spinner')?.remove();
+
+      if (!matchIds || matchIds.length === 0) {
+        section.innerHTML += `<div class="match-empty">No ranked solo matches found.</div>`;
+        if (start > 0) renderPagination(puuid, start, 0);
+        return;
+      }
+
+      const total = matchIds.length;
+      section.innerHTML += `
+        <div id="match-progress-wrap" class="match-progress-wrap" style="display:none">
+          <div class="match-progress-bar">
+            <div id="match-progress-fill" class="match-progress-fill" style="width:0%"></div>
+          </div>
+          <span id="match-progress-label" class="match-progress-label">Loading 0 / ${total}</span>
+        </div>
+        <div id="match-cards"></div>
+      `;
+
+      let resolved = 0;
+
+      matchIds.forEach(matchId => {
+        fetch(`${API_URL}/api/match?matchId=${encodeURIComponent(matchId)}`)
+          .then(r => r.ok ? r.json() : Promise.reject())
+          .then(match => {
+            resolved++;
+            appendMatchCard(match, puuid);
+            onMatchResolved(resolved, total, puuid, start);
+          })
+          .catch(() => {
+            resolved++;
+            onMatchResolved(resolved, total, puuid, start);
+          });
+      });
+    }
+
+    function onMatchResolved(resolved, total, puuid, start) {
+      // Show progress bar only after first 3 cards are in
+      if (resolved >= 3) {
+        const wrap = document.getElementById('match-progress-wrap');
+        if (wrap) {
+          wrap.style.display = resolved < total ? 'flex' : 'none';
+          const fill = document.getElementById('match-progress-fill');
+          const label = document.getElementById('match-progress-label');
+          if (fill) fill.style.width = `${(resolved / total) * 100}%`;
+          if (label) label.textContent = `Loading ${resolved} / ${total}`;
+        }
+      }
+      if (resolved === total) {
+        const wrap = document.getElementById('match-progress-wrap');
+        if (wrap) wrap.style.display = 'none';
+        renderPagination(puuid, start, total);
+      }
+    }
+
+    function appendMatchCard(match, searchedPuuid) {
+      const cards = document.getElementById('match-cards');
+      if (!cards) return;
+
+      const me = match.participants.find(p => p.puuid === searchedPuuid)
+        || match.participants[0];
+
+      const wl = me.win ? 'win' : 'loss';
+      const role = POSITION_LABELS[me.teamPosition] || '?';
+      const kda = `${me.kills}/${me.deaths}/${me.assists}`;
+      const duration = formatDuration(match.gameDuration);
+      const date = formatDate(match.gameStartTimestamp);
+
+      const card = document.createElement('div');
+      card.className = `match-card ${wl}`;
+
+      card.innerHTML = `
+        <div class="match-summary">
+          <span class="match-wl-chip ${wl}">${me.win ? 'WIN' : 'LOSS'}</span>
+          <img class="match-champ-icon" src="${escHtml(championIconUrl(me.champion))}" alt="${escHtml(me.champion)}" onerror="this.style.display='none'">
+          <span class="match-champ-name">${escHtml(me.champion)}</span>
+          <span class="match-role-label">${escHtml(role)}</span>
+          <span class="match-kda-text">${escHtml(kda)}</span>
+          <span class="match-meta">Ranked Solo · ${escHtml(duration)} · ${escHtml(date)}</span>
+          <span class="match-chevron">▾</span>
+        </div>
+        <div class="match-details">
+          ${buildTeamTable(match.participants, 100, searchedPuuid)}
+          ${buildTeamTable(match.participants, 200, searchedPuuid)}
+        </div>
+      `;
+
+      card.querySelector('.match-summary').addEventListener('click', () => {
+        card.classList.toggle('expanded');
+      });
+
+      // Attach rank hover listeners
+      card.querySelectorAll('.rank-hoverable').forEach(badge => {
+        const bPuuid = badge.dataset.puuid;
+        const preReset = badge.dataset.preReset;
+        const tooltip = badge.querySelector('.rank-tooltip');
+
+        badge.addEventListener('mouseenter', async () => {
+          if (rankCache.has(bPuuid)) {
+            const cached = rankCache.get(bPuuid);
+            if (cached !== 'loading') {
+              tooltip.textContent = `Pre-reset: ${preReset}  |  Current: ${formatCurrentRank(cached)}`;
+            }
+            return;
+          }
+          rankCache.set(bPuuid, 'loading');
+          tooltip.textContent = 'Loading…';
+          try {
+            const res = await fetch(`${API_URL}/api/current-rank?puuid=${encodeURIComponent(bPuuid)}`);
+            const data = res.ok ? await res.json() : null;
+            rankCache.set(bPuuid, data);
+            tooltip.textContent = `Pre-reset: ${preReset}  |  Current: ${formatCurrentRank(data)}`;
+          } catch {
+            rankCache.delete(bPuuid);
+            tooltip.textContent = `Pre-reset: ${preReset}`;
+          }
+        });
+      });
+
+      cards.appendChild(card);
+    }
+
+    function buildTeamTable(participants, teamId, searchedPuuid) {
+      const team = participants.filter(p => p.teamId === teamId);
+      if (team.length === 0) return '';
+      const won = team[0]?.win;
+      const outcome = won ? 'VICTORY' : 'DEFEAT';
+      const teamLabel = teamId === 100 ? 'Blue Team' : 'Red Team';
+      const labelClass = won ? 'victory' : 'defeat';
+
+      const rows = team.map(p => {
+        const isMe = p.puuid === searchedPuuid;
+        const itemsHtml = p.items.map(id =>
+          id
+            ? `<img class="item-icon" src="${escHtml(itemIconUrl(id))}" alt="" onerror="this.style.display='none'">`
+            : `<span class="item-empty"></span>`
+        ).join('');
+
+        return `
+          <tr class="${isMe ? 'highlighted' : ''}">
+            <td><span class="p-name">${escHtml(p.name)}</span><span class="p-tag">#${escHtml(p.tag)}</span></td>
+            <td>${rankBadgeWithTooltip(p.name, p.tag, p.puuid)}</td>
+            <td>
+              <div class="champ-cell">
+                <img class="champ-icon-sm" src="${escHtml(championIconUrl(p.champion))}" alt="${escHtml(p.champion)}" onerror="this.style.display='none'">
+                <span>${escHtml(p.champion)}</span>
+              </div>
+            </td>
+            <td class="num">${p.kills}/${p.deaths}/${p.assists}</td>
+            <td class="num">${p.cs}</td>
+            <td class="num">${(p.damage / 1000).toFixed(1)}k</td>
+            <td class="num">${(p.gold / 1000).toFixed(1)}k</td>
+            <td class="num">${p.visionScore}</td>
+            <td><div class="items-cell">${itemsHtml}</div></td>
+          </tr>
+        `;
+      }).join('');
+
+      return `
+        <div class="match-team-section">
+          <div class="match-team-label ${labelClass}">${outcome} — ${teamLabel}</div>
+          <table class="match-table">
+            <thead>
+              <tr>
+                <th>Player</th><th>Rank</th><th>Champion</th>
+                <th class="num">KDA</th><th class="num">CS</th>
+                <th class="num">Damage</th><th class="num">Gold</th>
+                <th class="num">Vision</th><th>Items</th>
+              </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function renderPagination(puuid, start, count) {
+      const pagination = document.getElementById('match-pagination');
+      const hasPrev = start > 0;
+      const hasNext = count === 10;
+      if (!hasPrev && !hasNext) return;
+
+      pagination.innerHTML = `
+        <div class="pagination-wrap">
+          <button id="prev-page-btn" ${hasPrev ? '' : 'disabled'}>← Prev 10</button>
+          <button id="next-page-btn" ${hasNext ? '' : 'disabled'}>Next 10 →</button>
+        </div>
+      `;
+
+      if (hasPrev) {
+        document.getElementById('prev-page-btn').addEventListener('click', () => {
+          loadMatchHistory(puuid, start - 10);
+        });
+      }
+      if (hasNext) {
+        document.getElementById('next-page-btn').addEventListener('click', () => {
+          loadMatchHistory(puuid, start + 10);
+        });
+      }
+    }
+
+    // ── Init ─────────────────────────────────────────────
+    loadDDragonVersion();
     loadSnapshot();
   </script>
 </body>
