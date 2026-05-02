@@ -136,13 +136,22 @@ app.get('/api/match', async (req, res) => {
 
     const participants = await Promise.all(
       match.info.participants.map(async p => {
-        const acct = await riotFetch(
-          `${AMERICAS}/riot/account/v1/accounts/by-puuid/${p.puuid}`, stats
-        );
+        let name = 'Unknown', tag = '???';
+        if (p.puuid) {
+          try {
+            const acct = await riotFetch(
+              `${AMERICAS}/riot/account/v1/accounts/by-puuid/${p.puuid}`, stats
+            );
+            name = acct.gameName;
+            tag = acct.tagLine;
+          } catch {
+            // account lookup failed — use fallback name
+          }
+        }
         return {
-          puuid: p.puuid,
-          name: acct.gameName,
-          tag: acct.tagLine,
+          puuid: p.puuid ?? '',
+          name,
+          tag,
           teamId: p.teamId,
           win: p.win,
           champion: p.championName,
