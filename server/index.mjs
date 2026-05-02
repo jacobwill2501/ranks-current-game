@@ -134,10 +134,12 @@ app.get('/api/match', async (req, res) => {
     const stats = { waitedMs: 0 };
     const match = await riotFetch(`${AMERICAS}/lol/match/v5/matches/${matchId}`, stats);
 
+    const validPuuids = new Set(match.metadata.participants.filter(Boolean));
+
     const participants = await Promise.all(
       match.info.participants.map(async p => {
         let name = 'Unknown', tag = '???';
-        if (p.puuid) {
+        if (p.puuid && validPuuids.has(p.puuid)) {
           try {
             const acct = await riotFetch(
               `${AMERICAS}/riot/account/v1/accounts/by-puuid/${p.puuid}`, stats
