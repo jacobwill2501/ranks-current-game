@@ -249,18 +249,6 @@
       }
     }
 
-    /* ── Not-in-game placeholder ────────────────────────── */
-    .not-in-game {
-      color: var(--muted);
-      font-size: 0.9rem;
-      padding: 1.2rem 0;
-      max-width: 700px;
-      width: 100%;
-      text-align: center;
-      border: 1px dashed var(--border);
-      border-radius: 10px;
-    }
-
     /* ── Match history wrapper ──────────────────────────── */
     #match-history,
     #match-pagination {
@@ -511,35 +499,6 @@
       display: block;
     }
 
-    /* ── Progress bar ───────────────────────────────────── */
-    .match-progress-wrap {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-
-    .match-progress-bar {
-      flex: 1;
-      height: 4px;
-      background: var(--border);
-      border-radius: 2px;
-      overflow: hidden;
-    }
-
-    .match-progress-fill {
-      height: 100%;
-      background: #6366f1;
-      border-radius: 2px;
-      transition: width 0.3s ease;
-    }
-
-    .match-progress-label {
-      font-size: 0.75rem;
-      color: var(--muted);
-      white-space: nowrap;
-    }
-
     /* ── Pagination ─────────────────────────────────────── */
     .pagination-wrap {
       display: flex;
@@ -728,9 +687,7 @@
           `;
         } else {
           setStatus('Not currently in a live game');
-          document.getElementById('results').innerHTML = `
-            <div class="not-in-game">Not currently in a live game</div>
-          `;
+          document.getElementById('results').innerHTML = '';
         }
 
         loadMatchHistory(currentPuuid, 0);
@@ -788,50 +745,35 @@
       }
 
       const total = matchIds.length;
-      section.innerHTML += `
-        <div id="match-progress-wrap" class="match-progress-wrap" style="display:none">
-          <div class="match-progress-bar">
-            <div id="match-progress-fill" class="match-progress-fill" style="width:0%"></div>
-          </div>
-          <span id="match-progress-label" class="match-progress-label">Loading 0 / ${total}</span>
-        </div>
-        <div id="match-cards"></div>
-      `;
-
       let resolved = 0;
+      const buffer = [];
+
+      document.getElementById('match-spinner').textContent = `Loading 0 / ${total}…`;
 
       matchIds.forEach(matchId => {
         fetch(`${API_URL}/api/match?matchId=${encodeURIComponent(matchId)}`)
           .then(r => r.ok ? r.json() : Promise.reject())
           .then(match => {
+            buffer.push(match);
             resolved++;
-            appendMatchCard(match, puuid);
-            onMatchResolved(resolved, total, puuid, start);
+            document.getElementById('match-spinner').textContent = `Loading ${resolved} / ${total}…`;
+            if (resolved === total) onAllMatchesLoaded(section, buffer, puuid, start, total);
           })
           .catch(() => {
             resolved++;
-            onMatchResolved(resolved, total, puuid, start);
+            document.getElementById('match-spinner').textContent = `Loading ${resolved} / ${total}…`;
+            if (resolved === total) onAllMatchesLoaded(section, buffer, puuid, start, total);
           });
       });
     }
 
-    function onMatchResolved(resolved, total, puuid, start) {
-      // Show progress bar only after first 3 cards are in
-      if (resolved >= 3) {
-        const wrap = document.getElementById('match-progress-wrap');
-        if (wrap) {
-          wrap.style.display = resolved < total ? 'flex' : 'none';
-          const fill = document.getElementById('match-progress-fill');
-          const label = document.getElementById('match-progress-label');
-          if (fill) fill.style.width = `${(resolved / total) * 100}%`;
-          if (label) label.textContent = `Loading ${resolved} / ${total}`;
-        }
-      }
-      if (resolved === total) {
-        const wrap = document.getElementById('match-progress-wrap');
-        if (wrap) wrap.style.display = 'none';
-        renderPagination(puuid, start, total);
-      }
+    function onAllMatchesLoaded(section, buffer, puuid, start, total) {
+      document.getElementById('match-spinner')?.remove();
+      const cards = document.createElement('div');
+      cards.id = 'match-cards';
+      section.appendChild(cards);
+      buffer.forEach(match => appendMatchCard(match, puuid));
+      renderPagination(puuid, start, total);
     }
 
     function appendMatchCard(match, searchedPuuid) {
