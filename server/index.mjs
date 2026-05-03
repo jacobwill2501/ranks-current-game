@@ -92,7 +92,7 @@ app.get('/api/live-game', async (req, res) => {
               // hidden participant (streamer mode, etc.)
             }
           }
-          return { name, tag, teamId: p.teamId, participantIndex: idx };
+          return { name, tag, teamId: p.teamId, participantIndex: idx, spell1Id: p.spell1Id, spell2Id: p.spell2Id };
         })
       );
     }
