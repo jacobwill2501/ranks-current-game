@@ -562,8 +562,6 @@
   <script>
     const API_URL = 'https://ranks-current-game.onrender.com';
 
-    const ROLES = ['Top', 'JG', 'Mid', 'Bot', 'Sup'];
-
     const POSITION_LABELS = {
       TOP: 'Top', JUNGLE: 'JG', MIDDLE: 'Mid', BOTTOM: 'Bot', UTILITY: 'Sup',
     };
@@ -668,14 +666,25 @@
 
     // ── Live game rendering ───────────────────────────────
     function renderTeam(participants, teamId, label, cls) {
-      const team = participants.filter(p => p.teamId === teamId);
-      const rows = team.map(p => `
-        <div class="player-row">
-          <span class="role">${ROLES[p.participantIndex % 5]}</span>
-          <span class="player-name">${escHtml(p.name)}<span class="tag">#${escHtml(p.tag)}</span></span>
-          ${badgeHtml(p)}
-        </div>
-      `).join('');
+      const SMITE_ID = 11;
+      const team = participants
+        .filter(p => p.teamId === teamId)
+        .sort((a, b) => {
+          const aJg = a.spell1Id === SMITE_ID || a.spell2Id === SMITE_ID;
+          const bJg = b.spell1Id === SMITE_ID || b.spell2Id === SMITE_ID;
+          return bJg - aJg;
+        });
+      const rows = team.map(p => {
+        const isJg = p.spell1Id === SMITE_ID || p.spell2Id === SMITE_ID;
+        const roleSpan = isJg ? `<span class="role">JG</span>` : `<span class="role role-empty"></span>`;
+        return `
+          <div class="player-row">
+            ${roleSpan}
+            <span class="player-name">${escHtml(p.name)}<span class="tag">#${escHtml(p.tag)}</span></span>
+            ${badgeHtml(p)}
+          </div>
+        `;
+      }).join('');
       return `
         <div class="team ${cls}">
           <div class="team-header">${label}</div>
